@@ -5,39 +5,53 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_home">
 
+    <!-- HOME -->
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.ids.ui.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- WEATHER -->
     <fragment
         android:id="@+id/nav_weather"
         android:name="com.example.ids.ui.weather.WeatherFragment"
         android:label="Weather"
         tools:layout="@layout/fragment_weather" />
 
+    <!-- IDENTIFY -->
     <fragment
         android:id="@+id/nav_identify"
         android:name="com.example.ids.ui.identify.IdentifyFragment"
         android:label="Identify"
         tools:layout="@layout/fragment_identify" />
 
-    <fragment
-        android:id="@+id/nav_my_plants"
-        android:name="com.example.ids.ui.myplants.MyPlantsFragment"
-        android:label="My Plants"
-        tools:layout="@layout/fragment_my_plants" />
-
+    <!-- SETTINGS -->
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.example.ids.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
 
+    <!-- DETTAGLI PIANTA (Destinazione) -->
     <fragment
         android:id="@+id/nav_plant_details"
         android:name="com.example.ids.ui.plantdetails.PlantDetailsFragment"
-        android:label="Plant Details"
+        android:label="Dettagli Pianta"
         tools:layout="@layout/fragment_plant_details" />
+
+    <!-- LE MIE PIANTE (Partenza) -->
+    <fragment
+        android:id="@+id/nav_my_plants"
+        android:name="com.example.ids.ui.myplants.MyPlantsFragment"
+        android:label="Le mie piante"
+        tools:layout="@layout/fragment_my_plants">
+
+        <!-- L'ACTION VA QUI DENTRO! -->
+        <action
+            android:id="@+id/action_show_plant_details"
+            app:destination="@id/nav_plant_details" />
+
+    </fragment> <!-- Chiusura di nav_my_plants -->
+
 </navigation>
