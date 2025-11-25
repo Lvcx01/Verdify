@@ -2,7 +2,6 @@ package com.example.ids
 
 import android.os.Bundle
 import android.view.Menu
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,19 +25,28 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
-        }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
+
+        // 1. PRIMA troviamo il NavController
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // 2. POI impostiamo il click del tasto (FAB) per usare il NavController
+        binding.appBarMain.fab.setOnClickListener { view ->
+            // Questo comando dice: "Vai alla pagina delle notifiche"
+            // Assicurati che in mobile_navigation.xml esista id/nav_notifications
+            navController.navigate(R.id.nav_notifications)
+        }
+
+        // Configurazione del menu laterale
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_weather, R.id.nav_identify, R.id.nav_my_plants, R.id.nav_settings
+                R.id.nav_home,
+                R.id.nav_weather,
+                R.id.nav_identify,
+                R.id.nav_my_plants,
+                R.id.nav_settings,
+                R.id.nav_notifications
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

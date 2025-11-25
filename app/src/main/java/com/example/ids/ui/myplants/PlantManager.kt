@@ -20,6 +20,30 @@ object PlantManager {
         }
     }
 
+    fun deletePlant(context: Context, commonName: String, scientificName: String, imagePath: String?) {
+        // Rimuove dalla lista la pianta che corrisponde a nome e percorso immagine
+        val wasRemoved = plants.removeAll { plant ->
+            plant.commonName == commonName &&
+                    plant.scientificName == scientificName &&
+                    plant.imagePath == imagePath
+        }
+
+        if (wasRemoved) {
+            savePlants(context)
+
+            if (imagePath != null) {
+                try {
+                    val file = java.io.File(imagePath)
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     // Carica la lista dal file JSON
     fun loadPlants(context: Context) {
         val file = File(context.filesDir, FILE_NAME)

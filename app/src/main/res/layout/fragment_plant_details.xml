@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     android:padding="16dp">
 
@@ -73,6 +74,18 @@
             android:textSize="16sp"
             android:lineSpacingMultiplier="1.2"
             android:textColor="#333333"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeletePlant"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:text="ELIMINA PIANTA"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#D32F2F"
+            app:cornerRadius="8dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

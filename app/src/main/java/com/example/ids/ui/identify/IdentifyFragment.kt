@@ -198,6 +198,19 @@ class IdentifyFragment : Fragment() {
             .show()
     }
 
+    private fun showErrorDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Pianta non rilevata")
+            .setMessage("Non siamo riusciti a identificare questa pianta.\n\nAssicurati che la foto sia a fuoco, ben illuminata e che il soggetto sia centrato.")
+            .setPositiveButton("Riprova") { _, _ ->
+                // RESETTA L'INTERFACCIA
+                // Rimuove l'immagine attuale così l'utente capisce di doverne caricare una nuova
+                binding.imagePreview.setImageDrawable(null)
+            }
+            .setNegativeButton("Annulla", null)
+            .show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
