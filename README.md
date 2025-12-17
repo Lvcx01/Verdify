@@ -22,3 +22,22 @@ The main goal of this project was to build a functional prototype in **Kotlin** 
 
 ---
 *Developed for academic purposes.*
+
+## ⚙️ Configuration & API Setup
+
+This project relies on external services to provide AI and weather data. To run the app, you need to obtain API keys from the following providers:
+
+* **PlantNet API:** Used for plant identification via image processing.
+* **Google AI Studio (Gemini):** Used to generate smart care advice and processing data.
+* **OpenWeatherMap API:** Used for real-time weather data and 5-day forecasts.
+
+### Security Note
+For security reasons, API keys are **not** stored in the source code. They are managed as environment variables.
+
+To set up the project:
+1. Create a `local.properties` file in your root directory (if not already present).
+2. Add your keys as follows:
+   ```properties
+   PLANTNET_API_KEY=your_key_here
+   GEMINI_API_KEY=your_key_here
+   OPENWEATHER_API_KEY=your_key_here
