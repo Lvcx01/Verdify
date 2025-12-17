@@ -1,11 +1,8 @@
 package com.example.ids.ui.weather
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.ids.R
 import com.example.ids.databinding.FragmentWeatherBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -30,22 +30,15 @@ class WeatherFragment : Fragment() {
 
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val handler = Handler(Looper.getMainLooper())
-    private lateinit var weatherRunnable: Runnable
-
-    // Aggiorna ogni 15 minuti
-    private val UPDATE_INTERVAL = 15 * 60 * 1000L
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
-                getLocationAndUpdateWeather()
+                getCurrentLocationWeather()
             } else {
-                Toast.makeText(requireContext(), "Serve la posizione per il meteo locale", Toast.LENGTH_LONG).show()
-                // Carica un meteo di default (es. Roma) se l'utente nega?
-                // fetchWeatherData(41.9028, 12.4964)
+                Toast.makeText(context, "Permission denied. Showing default.", Toast.LENGTH_SHORT).show()
+                fetchWeatherData(41.9028, 12.4964) // Fallback
             }
         }
 
@@ -54,149 +47,174 @@ class WeatherFragment : Fragment() {
     ): View {
         _binding = FragmentWeatherBinding.inflate(inflater, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        binding.forecastRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        binding.recyclerForecast.layoutManager = LinearLayoutManager(context)
+
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.ENGLISH)
+        binding.tvDate.text = dateFormat.format(Date()).uppercase()
+
+        setDarkThemeColors(true)
+
+        checkPermissionsAndLoad()
+
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Avvia il ciclo di aggiornamento
-        weatherRunnable = Runnable {
-            getLocationAndUpdateWeather()
-            handler.postDelayed(weatherRunnable, UPDATE_INTERVAL)
-        }
-        handler.post(weatherRunnable)
-    }
-
-    private fun getLocationAndUpdateWeather() {
-        // Controllo Permessi
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    private fun checkPermissionsAndLoad() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            return
-        }
-
-        // Provo a prendere l'ultima posizione nota
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                fetchWeatherData(location.latitude, location.longitude)
-            } else {
-                // Se è null (succede spesso negli emulatori o se il GPS era spento), forziamo una richiesta
-                requestNewLocationData()
-            }
+        } else {
+            getCurrentLocationWeather()
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun requestNewLocationData() {
-        // Questa funzione forza il GPS a cercare dove siamo ORA
-        val cancellationTokenSource = CancellationTokenSource()
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationTokenSource.token)
+    private fun getCurrentLocationWeather() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
+
+        binding.tvLocation.text = "Locating..."
+
+        val cancellationToken = CancellationTokenSource()
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cancellationToken.token)
             .addOnSuccessListener { location ->
                 if (location != null) {
                     fetchWeatherData(location.latitude, location.longitude)
                 } else {
-                    Toast.makeText(requireContext(), "Attiva il GPS e apri Maps per un fix iniziale", Toast.LENGTH_LONG).show()
+                    fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                        if (lastLoc != null) fetchWeatherData(lastLoc.latitude, lastLoc.longitude)
+                        else fetchWeatherData(41.9028, 12.4964)
+                    }
                 }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "GPS Error: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun fetchWeatherData(lat: Double, lon: Double) {
         lifecycleScope.launch {
             try {
-                // 1. Meteo Attuale
-                val currentWeather = WeatherRetrofitInstance.api.getCurrentWeather(lat, lon)
-                updateCurrentUI(currentWeather)
+                val current = withContext(Dispatchers.IO) {
+                    WeatherRepository.getWeatherData(requireContext(), lat, lon)
+                }
+                updateCurrentUI(current)
 
-                // 2. Previsioni
-                val forecastResponse = WeatherRetrofitInstance.api.getForecast(lat, lon)
-                updateForecastUI(forecastResponse.list)
-
-                // 3. Controllo Pericoli (Logica personalizzata)
-                checkWeatherAlerts(forecastResponse.list)
+                val forecast = WeatherRetrofitInstance.api.getForecast(lat, lon)
+                updateForecastList(forecast.list)
 
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Errore connessione: ${e.message}", Toast.LENGTH_SHORT).show()
-                e.printStackTrace()
+                // ...
             }
         }
     }
 
     private fun updateCurrentUI(data: WeatherResponse) {
-        binding.cityName.text = data.name
-        binding.temperature.text = "${data.main.temp.toInt()}°C"
-        binding.weatherDescription.text = data.weather.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: ""
+        if (_binding == null) return
+
+        binding.tvLocation.text = "📍 ${data.name}"
+        binding.tvTemperature.text = "${data.main.temp.toInt()}°"
+
+        // Descrizione corrente
+        val desc = data.weather.firstOrNull()?.description ?: ""
+        binding.tvCondition.text = desc.replaceFirstChar { it.uppercase() }
+
+        binding.tvHumidity.text = "${data.main.humidity}%"
+        val windKmh = (data.wind.speed * 3.6).toInt()
+        binding.tvWind.text = "$windKmh km/h"
 
         val iconCode = data.weather.firstOrNull()?.icon ?: "01d"
         val iconUrl = "https://openweathermap.org/img/w/$iconCode.png"
-        Glide.with(this).load(iconUrl).into(binding.weatherIcon)
+        Glide.with(this).load(iconUrl).into(binding.imgWeatherIcon)
+
+        val conditionId = data.weather.firstOrNull()?.id ?: 800
+        updateBackgroundTheme(conditionId)
     }
 
-    private fun updateForecastUI(fullList: List<ForecastItem>) {
-        val filteredList = mutableListOf<ForecastItem>()
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-        // Filtriamo per avere solo le ore 12:00 dei prossimi giorni
-        for (item in fullList) {
-            if (item.dt_txt.contains("12:00:00") && !item.dt_txt.startsWith(today)) {
-                filteredList.add(item)
-            }
-        }
-
-        // Se la lista filtrata è vuota (es. sono le 13:00 e non ci sono le 12 di oggi), prendiamo i primi slot dei giorni successivi
-        // Ma per semplicità usiamo quello che abbiamo trovato
-        val adapter = ForecastAdapter(filteredList.take(3))
-        binding.forecastRecyclerView.adapter = adapter
+    private fun updateForecastList(fullList: List<ForecastItem>) {
+        if (_binding == null) return
+        val dailyList = fullList.filter { it.dt_txt.contains("12:00:00") }
+        val displayList = if (dailyList.isNotEmpty()) dailyList else fullList.take(5)
+        val adapter = ForecastAdapter(displayList)
+        binding.recyclerForecast.adapter = adapter
     }
 
-    // --- LOGICA ALLERTE PERSONALIZZATA ---
-    private fun checkWeatherAlerts(fullList: List<ForecastItem>) {
-        var alertMessage = ""
-        var hasAlert = false
+    private fun updateBackgroundTheme(conditionId: Int) {
+        val backgroundView = binding.weatherScroll
 
-        // Controlliamo tutte le fasce orarie dei prossimi giorni
-        for (item in fullList) {
-            val temp = item.main.temp
-            val weatherId = try { item.weather[0].icon.substring(0, 2).toInt() } catch (e:Exception) { 0 } // Hack per capire il tipo grossolano
-            val description = item.weather[0].description
-
-            // 1. GELO
-            if (temp <= 0) {
-                alertMessage = "Allerta Gelo: proteggi le piante sensibili!"
-                hasAlert = true
-                break
+        when (conditionId) {
+            in 200..232 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_thunder)
+                setDarkThemeColors(false)
+                binding.tvSuggestionTitle.text = "Storm Warning"
+                binding.tvSuggestionDesc.text = "Keep delicate plants indoors."
             }
-            // 2. CALDO ESTREMO
-            if (temp >= 35) {
-                alertMessage = "Allerta Caldo: innaffia abbondantemente!"
-                hasAlert = true
-                break
+            in 300..321 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_drizzle)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "Light Drizzle"
+                binding.tvSuggestionDesc.text = "No need to water today."
             }
-            // 3. TEMPESTA/NEVE (Codici OpenWeather: 2xx Thunderstorm, 6xx Snow)
-            // L'icona è tipo "11d". Prendiamo i primi due caratteri. "11" è thunderstorm, "13" è neve.
-            if (item.weather[0].icon.startsWith("11")) {
-                alertMessage = "Temporali in arrivo: metti al riparo le piante!"
-                hasAlert = true
-                break
+            in 500..531 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_rainy)
+                setDarkThemeColors(false)
+                binding.tvSuggestionTitle.text = "Rainy Day"
+                binding.tvSuggestionDesc.text = "Collect rainwater if you can!"
             }
-            if (item.weather[0].icon.startsWith("13")) {
-                alertMessage = "Prevista Neve: copri le piante esterne!"
-                hasAlert = true
-                break
+            in 600..622 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_snow)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "Snow Falling"
+                binding.tvSuggestionDesc.text = "Protect roots from frost."
             }
-        }
-
-        if (hasAlert) {
-            binding.warningCard.visibility = View.VISIBLE
-            binding.warningText.text = alertMessage
-        } else {
-            binding.warningCard.visibility = View.GONE
+            in 701..781 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_fog)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "Foggy"
+                binding.tvSuggestionDesc.text = "High humidity levels."
+            }
+            800 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_sunny)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "All Clear"
+                binding.tvSuggestionDesc.text = "Perfect conditions for gardening."
+            }
+            801 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_sunny)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "Mostly Sunny"
+                binding.tvSuggestionDesc.text = "Great day for outdoor work."
+            }
+            802 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_cloudy)
+                setDarkThemeColors(true)
+                binding.tvSuggestionTitle.text = "Partly Cloudy"
+                binding.tvSuggestionDesc.text = "Good for planting, not too hot."
+            }
+            803, 804 -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_overcast)
+                setDarkThemeColors(false)
+                binding.tvSuggestionTitle.text = "Overcast"
+                binding.tvSuggestionDesc.text = "Low light conditions."
+            }
+            else -> {
+                backgroundView.setBackgroundResource(R.drawable.bg_weather_sunny)
+                setDarkThemeColors(true)
+            }
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        handler.removeCallbacks(weatherRunnable)
+    private fun setDarkThemeColors(isDarkText: Boolean) {
+        val color = if (isDarkText) 0xFF333333.toInt() else 0xFFFFFFFF.toInt()
+        val colorSecondary = if (isDarkText) 0xFF555555.toInt() else 0xFFDDDDDD.toInt()
+
+        binding.tvDate.setTextColor(color)
+        binding.tvCondition.setTextColor(color)
+        binding.tvTemperature.setTextColor(color)
+        binding.tvForecastTitle.setTextColor(color)
+        binding.tvHumidity.setTextColor(color)
+        binding.tvWind.setTextColor(color)
+        binding.tvSuggestionTitle.setTextColor(color)
+
+        binding.tvSuggestionDesc.setTextColor(colorSecondary)
     }
 
     override fun onDestroyView() {

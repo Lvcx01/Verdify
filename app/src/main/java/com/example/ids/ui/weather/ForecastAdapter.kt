@@ -11,15 +11,14 @@ import com.example.ids.R
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class ForecastAdapter(private val forecastList: List<ForecastItem>) :
+class ForecastAdapter(private val items: List<ForecastItem>) :
     RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
     class ForecastViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val dateText: TextView = view.findViewById(R.id.forecastDate)
-        val tempText: TextView = view.findViewById(R.id.forecastTemp)
-        val iconImage: ImageView = view.findViewById(R.id.forecastIcon)
-        // NUOVO CAMPO
-        val descText: TextView = view.findViewById(R.id.forecastDescription)
+        val tvDay: TextView = view.findViewById(R.id.itemDay)
+        val tvDesc: TextView = view.findViewById(R.id.itemDesc) // Descrizione
+        val tvTemp: TextView = view.findViewById(R.id.itemTemp)
+        val imgIcon: ImageView = view.findViewById(R.id.itemIcon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -29,29 +28,25 @@ class ForecastAdapter(private val forecastList: List<ForecastItem>) :
     }
 
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
-        val item = forecastList[position]
+        val item = items[position]
 
-        // 1. Data
         try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("EEE d", Locale.getDefault()) // Es: Lun 25
-            val date = inputFormat.parse(item.dt_txt)
-            holder.dateText.text = if (date != null) outputFormat.format(date).replaceFirstChar { it.uppercase() } else item.dt_txt
+            val inFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+            val outFormat = SimpleDateFormat("EEE", Locale.ENGLISH)
+            val date = inFormat.parse(item.dt_txt)
+            holder.tvDay.text = if (date != null) outFormat.format(date) else ""
         } catch (e: Exception) {
-            holder.dateText.text = item.dt_txt
+            holder.tvDay.text = ""
         }
 
-        // 2. Temperatura
-        holder.tempText.text = "${item.main.temp.toInt()}°C"
+        val description = item.weather.firstOrNull()?.description ?: ""
+        holder.tvDesc.text = description.split(" ")
+            .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
 
-        // 3. Icona
-        val iconUrl = "https://openweathermap.org/img/w/${item.weather[0].icon}.png"
-        Glide.with(holder.itemView.context).load(iconUrl).into(holder.iconImage)
-
-        // 4. NUOVO: Descrizione (Prima lettera maiuscola)
-        val description = item.weather[0].description
-        holder.descText.text = description.replaceFirstChar { it.uppercase() }
+        holder.tvTemp.text = "${item.main.temp.toInt()}°"
+        val iconCode = item.weather.firstOrNull()?.icon ?: "01d"
+        val url = "https://openweathermap.org/img/w/$iconCode.png"
+        Glide.with(holder.itemView.context).load(url).into(holder.imgIcon)
     }
-
-    override fun getItemCount() = forecastList.size
+    override fun getItemCount() = items.size
 }

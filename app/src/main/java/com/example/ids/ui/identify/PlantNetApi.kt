@@ -11,15 +11,22 @@ import retrofit2.http.Query
 interface PlantNetApi {
 
     @Multipart
-    @POST("v2/identify/all") // Solo l'endpoint finale!
+    @POST("v2/identify/all")
     suspend fun identifyPlant(
-        @Query("api-key") apiKey: String, // Passala qui, non nell'URL!
-        @Part image: MultipartBody.Part,  // L'immagine
-        @Part("organs") organ: RequestBody, // FONDAMENTALE: foglia, fiore, ecc.
-        @Query("include-related-images") includeRelatedImages: Boolean = false,
+        @Query("api-key") apiKey: String,
+        @Part image: MultipartBody.Part,
+        @Part("organs") organ: RequestBody,
+        @Query("include-related-images") includeRelatedImages: Boolean = true,
         @Query("no-reject") noReject: Boolean = false,
         @Query("lang") lang: String = "it"
     ): PlantNetResponse
+
+    @GET("v2/ktn/species")
+    suspend fun searchSpecies(
+        @Query("api-key") apiKey: String,
+        @Query("q") query: String,
+        @Query("lang") lang: String = "it"
+    ): List<PlantNetSpecies>
 }
 
 data class PlantNetResponse(
@@ -28,10 +35,20 @@ data class PlantNetResponse(
 
 data class PlantNetResult(
     val score: Double,
-    val species: PlantNetSpecies
+    val species: PlantNetSpecies,
+    val images: List<PlantNetImage>?
 )
 
 data class PlantNetSpecies(
     val scientificName: String,
-    val commonNames: List<String>
+    val commonNames: List<String>?
+)
+
+data class PlantNetImage(
+    val url: PlantNetImageUrl
+)
+
+data class PlantNetImageUrl(
+    val m: String,
+    val s: String
 )

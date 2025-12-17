@@ -4,5 +4,5 @@ data class SavedPlant(
     val commonName: String,
     val scientificName: String,
     val accuracy: String,
-    val imagePath: String? = null // Nuovo campo: percorso del file sul telefono
+    val imagePath: String? = null
 )

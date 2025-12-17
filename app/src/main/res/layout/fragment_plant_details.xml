@@ -1,91 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFFFFF"
-    android:padding="16dp">
+    android:background="#F5F7FA">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="320dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <!-- ECCO L'IMMAGINE CHE MANCAVA -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            android:layout_height="match_parent"
+            app:contentScrim="@color/gardener_green"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/detailImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery" />
-        </androidx.cardview.widget.CardView>
+                android:src="@drawable/ic_plant_illustration"
+                app:layout_collapseMode="parallax" />
 
-        <!-- Titolo: Nome Comune -->
-        <TextView
-            android:id="@+id/detailCommonName"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_gradient_text_protection"
+                android:rotation="180"/>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                android:background="@android:color/transparent"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_home_gradient"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:paddingBottom="100dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nome Pianta"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#2E7D32"
-            android:layout_marginBottom="4dp"/>
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <!-- Sottotitolo: Nome Scientifico -->
-        <TextView
-            android:id="@+id/detailScientificName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Scientific Name"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:textColor="#555555"
-            android:layout_marginBottom="24dp"/>
+            <TextView
+                android:id="@+id/detailCommonName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plant Name"
+                android:textColor="@color/text_dark"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.02"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#EEEEEE"
-            android:layout_marginBottom="24dp"/>
+            <TextView
+                android:id="@+id/detailScientificName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scientific Name"
+                android:textColor="@color/text_gray"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                android:layout_marginTop="4dp"/>
 
-        <!-- Sezione Trattamento -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Piano di Trattamento"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAccuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Confidence: 98%"
+                android:textColor="#047857"
+                app:chipBackgroundColor="#D1FAE5"
+                app:chipStrokeWidth="0dp"/>
 
-        <TextView
-            android:id="@+id/detailTreatment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Caricamento consigli..."
-            android:textSize="16sp"
-            android:lineSpacingMultiplier="1.2"
-            android:textColor="#333333"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDeletePlant"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
-            android:text="ELIMINA PIANTA"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#D32F2F"
-            app:cornerRadius="8dp"
-            android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-    </LinearLayout>
-</ScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_info_details"
+                            app:tint="@color/gardener_green"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI Care Tips"
+                            android:textColor="@color/gardener_dark_green"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvGeminiTips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Asking the expert..."
+                        android:textColor="#374151"
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="6dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeletePlant"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:text="Remove from Garden"
+                android:textColor="#EF4444"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconTint="#EF4444"
+                app:iconGravity="textStart"
+                app:backgroundTint="#FEF2F2"
+                app:cornerRadius="16dp"
+                app:strokeColor="#FEE2E2"
+                app:strokeWidth="1dp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+
+        android:src="@drawable/ic_arrow_back_24"
+        app:tint="#1B5E20"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

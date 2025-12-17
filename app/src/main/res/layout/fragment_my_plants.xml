@@ -1,34 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.myplants.MyPlantsFragment">
+    android:background="#F9FAFB"
+    android:padding="16dp">
 
-    
+    <TextView
+        android:id="@+id/titleMyPlants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Plants"
+        android:textColor="#111827"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddPlant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gardener_green"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF"
+        app:fabSize="mini"
+        app:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/titleMyPlants"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/titleMyPlants" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPlants"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleMyPlants"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    
     <TextView
         android:id="@+id/textEmptyList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nessuna pianta salvata ancora"
+        android:text="No plants yet.\nTap + to add one."
+        android:textAlignment="center"
+        android:textColor="#9CA3AF"
+        android:textSize="16sp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/titleMyPlants" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

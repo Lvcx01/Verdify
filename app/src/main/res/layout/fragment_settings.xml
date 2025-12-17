@@ -1,120 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#F5F5F5">
+    android:background="#E8F5E9">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Header con Back Button -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#1B5E20" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="16dp"
+        android:text="Settings"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#1B5E20"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
 
-        <!-- SEZIONE 1: DATI -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gestione Dati"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#757575"
-            android:layout_marginBottom="8dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <LinearLayout
+            <!-- Card Notifiche -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@android:color/white">
 
-                <Button
-                    android:id="@+id/btnExport"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Esporta Dati (Backup)"
-                    android:backgroundTint="#2196F3"
-                    android:drawableLeft="@android:drawable/ic_menu_save"
-                    android:layout_marginBottom="8dp"/>
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <Button
-                    android:id="@+id/btnImport"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Importa Dati"
-                    android:backgroundTint="#4CAF50"
-                    android:drawableLeft="@android:drawable/ic_menu_upload"/>
+                    <TextView
+                        android:text="Notifications"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#1B5E20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nota: Importando i dati, quelli attuali verranno sovrascritti."
-                    android:textSize="12sp"
-                    android:layout_marginTop="8dp"
-                    android:textColor="#D32F2F"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <!-- SWITCH: Testo forzato scuro -->
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchNotifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Enable Notifications"
+                        android:textColor="#333333"
+                        android:textSize="16sp" />
 
-        <!-- SEZIONE 2: NOTIFICHE -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preferenze Notifiche"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#757575"
-            android:layout_marginBottom="8dp"/>
+                    <!-- CHECKBOX: Testo forzato scuro -->
+                    <CheckBox
+                        android:id="@+id/checkWeather"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Weather Alerts"
+                        android:textColor="#333333"
+                        android:buttonTint="#1B5E20"
+                        android:enabled="false" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+                    <CheckBox
+                        android:id="@+id/checkCare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Daily Care Reminders"
+                        android:textColor="#333333"
+                        android:buttonTint="#1B5E20"
+                        android:enabled="false" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <!-- Card Backup -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@android:color/white">
 
-                <Switch
-                    android:id="@+id/switchNotifications"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Abilita tutte le notifiche"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:checked="true"
-                    android:layout_marginBottom="16dp"/>
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EEEEEE"
-                    android:layout_marginBottom="16dp"/>
+                    <TextView
+                        android:text="Data &amp; Backup"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#1B5E20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                <CheckBox
-                    android:id="@+id/checkWeather"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Allerte Meteo"
-                    android:checked="true"/>
+                    <!-- EXPORT: Verde Pieno -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExport"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Export Data"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:backgroundTint="#1B5E20"
+                        app:cornerRadius="12dp" />
 
-                <CheckBox
-                    android:id="@+id/checkCare"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Promemoria cura piante"
-                    android:checked="true"/>
+                    <!-- IMPORT: Bianco con bordo Verde -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnImport"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Import Data"
+                        android:textColor="#1B5E20"
+                        android:textStyle="bold"
+                        app:strokeColor="#1B5E20"
+                        app:strokeWidth="2dp"
+                        app:cornerRadius="12dp" />
 
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

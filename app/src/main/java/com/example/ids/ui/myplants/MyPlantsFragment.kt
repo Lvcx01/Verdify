@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.ids.databinding.FragmentMyPlantsBinding
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.ids.MainActivity
 import com.example.ids.R
+import com.example.ids.databinding.FragmentMyPlantsBinding
 
 class MyPlantsFragment : Fragment() {
 
@@ -22,44 +22,34 @@ class MyPlantsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMyPlantsBinding.inflate(inflater, container, false)
-
-        // Setup della lista
-        setupRecyclerView()
-
         return binding.root
     }
 
-    private fun setupRecyclerView() {
-        val adapter = PlantsAdapter(PlantManager.plants) { selectedPlant ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            // 1. Prepariamo i dati come prima
+        binding.btnAddPlant.setOnClickListener {
+            findNavController().navigate(R.id.nav_identify)
+            (activity as? MainActivity)?.binding?.navView?.selectedItemId = R.id.nav_identify
+        }
+
+        PlantManager.loadPlants(requireContext())
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        val layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerViewPlants.layoutManager = layoutManager
+
+        val adapter = PlantsAdapter(PlantManager.plants) { selectedPlant ->
             val bundle = Bundle()
             bundle.putString("commonName", selectedPlant.commonName)
             bundle.putString("scientificName", selectedPlant.scientificName)
             bundle.putString("imagePath", selectedPlant.imagePath)
-
-            // 2. USIAMO IL NAVIGATOR INVECE DI BEGINTRANSACTION
-            // R.id.action_show_plant_details deve corrispondere all'ID che hai messo nel file XML al passo 1
-            try {
-                findNavController().navigate(R.id.action_show_plant_details, bundle)
-            } catch (e: Exception) {
-                // Se crasha qui, significa che l'ID nell'XML è diverso da quello scritto qui
-                e.printStackTrace()
-                Toast.makeText(context, "Errore navigazione: controlla mobile_navigation.xml", Toast.LENGTH_LONG).show()
-            }
+            findNavController().navigate(R.id.action_show_plant_details, bundle)
         }
 
-        binding.recyclerViewPlants.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewPlants.adapter = adapter
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Ricarica nel caso siano cambiate cose
-        PlantManager.loadPlants(requireContext())
-        binding.recyclerViewPlants.adapter?.notifyDataSetChanged()
-
-        // Gestione lista vuota (opzionale ma consigliata)
         if (PlantManager.plants.isEmpty()) {
             binding.textEmptyList.visibility = View.VISIBLE
             binding.recyclerViewPlants.visibility = View.GONE
@@ -69,11 +59,16 @@ class MyPlantsFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Carica i dati dal disco appena si apre la vista
+    override fun onResume() {
+        super.onResume()
         PlantManager.loadPlants(requireContext())
-        setupRecyclerView()
+        binding.recyclerViewPlants.adapter?.notifyDataSetChanged()
+
+        if (PlantManager.plants.isEmpty()) {
+            binding.textEmptyList.visibility = View.VISIBLE
+        } else {
+            binding.textEmptyList.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {
