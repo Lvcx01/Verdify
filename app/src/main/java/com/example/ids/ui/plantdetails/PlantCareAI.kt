@@ -1,17 +1,15 @@
 package com.example.ids.ui.plantdetails
 
 import android.util.Log
+import com.google.ai.client.generativeai.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object PlantCareAI {
-
-    private const val API_KEY = ""
-
     val model = GenerativeModel(
         modelName = "gemini-2.0-flash",
-        apiKey = API_KEY
+        apiKey = BuildConfig.GEMINI_API_KEY
     )
 
     suspend fun askForCareTips(plantName: String, weatherReport: String, currentDate: String): String {

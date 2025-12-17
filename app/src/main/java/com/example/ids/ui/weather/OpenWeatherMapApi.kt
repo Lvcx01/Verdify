@@ -1,5 +1,6 @@
 package com.example.ids.ui.weather
 
+import com.google.ai.client.generativeai.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -8,6 +9,7 @@ interface OpenWeatherMapApi {
     suspend fun getCurrentWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
+        @Query("appid") apiKey: String = BuildConfig.OPENWEATHER_API_KEY,
         @Query("units") units: String = "metric",
         @Query("lang") lang: String = "it"
     ): WeatherResponse
@@ -16,6 +18,7 @@ interface OpenWeatherMapApi {
     suspend fun getForecast(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
+        @Query("appid") apiKey: String = OPENWEATHER_API_KEY,
         @Query("units") units: String = "metric",
         @Query("lang") lang: String = "it"
     ): ForecastResponse
