@@ -9,7 +9,7 @@ interface OpenWeatherMapApi {
     suspend fun getCurrentWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("appid") apiKey: String = BuildConfig.OPENWEATHER_API_KEY,
+        @Query("appid") apiKey: String = com.example.ids.BuildConfig.OPENWEATHER_API_KEY,
         @Query("units") units: String = "metric",
         @Query("lang") lang: String = "it"
     ): WeatherResponse
@@ -18,7 +18,7 @@ interface OpenWeatherMapApi {
     suspend fun getForecast(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("appid") apiKey: String = OPENWEATHER_API_KEY,
+        @Query("appid") apiKey: String = com.example.ids.BuildConfig.OPENWEATHER_API_KEY,
         @Query("units") units: String = "metric",
         @Query("lang") lang: String = "it"
     ): ForecastResponse

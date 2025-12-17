@@ -22,7 +22,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.ids.databinding.FragmentIdentifyBinding
 import com.example.ids.ui.myplants.PlantManager
 import com.example.ids.ui.myplants.SavedPlant
-import com.google.ai.client.generativeai.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -198,7 +197,7 @@ class IdentifyFragment : Fragment() {
                 val imagePart = MultipartBody.Part.createFormData("images", "image.jpg", requestBody)
                 val organPart = "auto".toRequestBody("text/plain".toMediaTypeOrNull())
 
-                val myApiKey = BuildConfig.PLANTNET_API_KEY;
+                val myApiKey = com.example.ids.BuildConfig.PLANTNET_API_KEY
 
                 val response = RetrofitInstance.api.identifyPlant(
                     apiKey = myApiKey.trim(),
