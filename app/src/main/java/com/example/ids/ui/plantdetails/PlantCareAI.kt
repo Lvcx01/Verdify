@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 
 object PlantCareAI {
 
-    private const val API_KEY = "AIzaSyAhwTR8KVh_kfTYjpE46mYOZ49OG8eckxE"
+    private const val API_KEY = ""
 
     val model = GenerativeModel(
         modelName = "gemini-2.0-flash",

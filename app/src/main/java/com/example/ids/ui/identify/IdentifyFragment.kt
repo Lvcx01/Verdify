@@ -197,7 +197,7 @@ class IdentifyFragment : Fragment() {
                 val imagePart = MultipartBody.Part.createFormData("images", "image.jpg", requestBody)
                 val organPart = "auto".toRequestBody("text/plain".toMediaTypeOrNull())
 
-                val myApiKey = "2b10tM6N9frQ08cERg6R3NUqfu" // API KEY
+                val myApiKey = "" // API KEY
 
                 val response = RetrofitInstance.api.identifyPlant(
                     apiKey = myApiKey.trim(),
