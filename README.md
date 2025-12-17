@@ -20,9 +20,6 @@ The main goal of this project was to build a functional prototype in **Kotlin** 
 * **Environment:** Android Studio
 * **Core Concepts:** Software Engineering principles, API Integration (Weather & Plant ID), and UI/UX design.
 
----
-*Developed for academic purposes.*
-
 ## ⚙️ Configuration & API Setup
 
 This project relies on external services to provide AI and weather data. To run the app, you need to obtain API keys from the following providers:
@@ -41,3 +38,6 @@ To set up the project:
    PLANTNET_API_KEY=your_key_here
    GEMINI_API_KEY=your_key_here
    OPENWEATHER_API_KEY=your_key_here
+
+---
+*Developed for academic purposes.*
