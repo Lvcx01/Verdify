@@ -1,3 +1,4 @@
+import org.gradle.api.GradleException
 import java.util.Properties
 
 plugins {
@@ -8,9 +9,15 @@ plugins {
 val localProperties = Properties().apply {
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
-        load(localPropertiesFile.inputStream())
+        localPropertiesFile.inputStream().use { load(it) }
     }
 }
+
+val placeholderApiKeyPattern = Regex(
+    "\\b(your[- ]?api[- ]?key|insert[- ]?key|replace|example|dummy|test|todo|placeholder|changeme|fake|mock|sample|null|none|empty|default)\\b",
+    RegexOption.IGNORE_CASE
+)
+private const val MINIMUM_API_KEY_LENGTH = 20
 
 android {
     namespace = "com.example.ids"
@@ -25,9 +32,17 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
-        val escapedGeminiApiKey = geminiApiKey.replace("\\", "\\\\").replace("\"", "\\\"")
-        buildConfigField("String", "GEMINI_API_KEY", "\"$escapedGeminiApiKey\"")
+        val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY")
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: throw GradleException("GEMINI_API_KEY in local.properties is missing or empty. Retrieve a valid Gemini API key from Google AI Studio and set it in that file.")
+        if (placeholderApiKeyPattern.containsMatchIn(geminiApiKey)) {
+            throw GradleException("GEMINI_API_KEY in local.properties appears to be a placeholder; please supply a real key from Google AI Studio.")
+        }
+        if (geminiApiKey.length < MINIMUM_API_KEY_LENGTH) {
+            throw GradleException("GEMINI_API_KEY in local.properties seems too short; please double-check the value from Google AI Studio.")
+        }
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -47,6 +62,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
