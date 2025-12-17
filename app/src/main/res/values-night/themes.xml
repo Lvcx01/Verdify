@@ -1,16 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.IdS" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+    <style name="Theme.IdS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/gardener_green</item>
+        <item name="colorPrimaryVariant">@color/gardener_dark_green</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+
+        <item name="colorSecondary">@color/gardener_green</item>
+        <item name="colorSecondaryVariant">@color/gardener_dark_green</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
+        <item name="android:statusBarColor">#000000</item>
+
+        <item name="materialAlertDialogTheme">@style/VerdifyAlertDialog</item>
+        <item name="alertDialogTheme">@style/VerdifyAlertDialog</item>
     </style>
+
+    <style name="VerdifyAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">#2D2D2D</item> <item name="buttonBarPositiveButtonStyle">@style/VerdifyAlertButton.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/VerdifyAlertButton.Negative</item>
+        <item name="colorAccent">@color/gardener_green</item>
+        <item name="android:textColorPrimary">@color/white</item> </style>
+
 </resources>

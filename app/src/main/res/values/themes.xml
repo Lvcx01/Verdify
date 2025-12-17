@@ -1,9 +1,33 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.IdS" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.IdS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/gardener_green</item>
+        <item name="colorPrimaryVariant">@color/gardener_dark_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/gardener_green</item>
+        <item name="colorSecondaryVariant">@color/gardener_dark_green</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <item name="android:statusBarColor">@color/gardener_dark_green</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="materialAlertDialogTheme">@style/VerdifyAlertDialog</item>
+        <item name="alertDialogTheme">@style/VerdifyAlertDialog</item>
     </style>
 
-    <style name="Theme.IdS.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="VerdifyAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/VerdifyAlertButton.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/VerdifyAlertButton.Negative</item>
+        <item name="colorAccent">@color/gardener_green</item>
+        <item name="android:textColorPrimary">@color/text_dark</item>
+    </style>
 
-    <style name="Theme.IdS.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="VerdifyAlertButton.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/gardener_green</item>
+    </style>
 
+    <style name="VerdifyAlertButton.Negative" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/text_gray</item>
+    </style>
 </resources>

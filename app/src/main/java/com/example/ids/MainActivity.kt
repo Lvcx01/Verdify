@@ -4,8 +4,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ids.databinding.ActivityMainBinding
+import com.example.ids.ui.notifications.GardeningWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,5 +39,20 @@ class MainActivity : AppCompatActivity() {
         navView.setOnItemReselectedListener { item ->
             navController.popBackStack(item.itemId, false)
         }
+
+        setupDailyWorker()
+    }
+
+    private fun setupDailyWorker() {
+        val workRequest = PeriodicWorkRequestBuilder<GardeningWorker>(24, TimeUnit.HOURS)
+            .setInitialDelay(12, TimeUnit.HOURS) // Primo controllo tra 12 ore (o metti 15 minuti per testare)
+            .addTag("gardening_daily_work")
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "VerdifyDailyWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
     }
 }
