@@ -143,7 +143,7 @@ class IdentifyFragment : Fragment() {
         }
     }
 
-    private fun loadOptimizedImage(uri: android.net.Uri) {
+    private fun loadOptimizedImage(uri: Uri) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
@@ -210,7 +210,7 @@ class IdentifyFragment : Fragment() {
                     binding.identifyButton.text = "IDENTIFY PLANT"
 
                     val results = response.results
-                    if (!results.isNullOrEmpty()) {
+                    if (results.isNotEmpty()) {
                         showConfirmationDialog(results[0])
                     } else {
                         showErrorDialog("No match found.", "Try a clearer photo.")

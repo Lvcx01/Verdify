@@ -138,7 +138,7 @@ class WeatherFragment : Fragment() {
     private fun updateForecastList(fullList: List<ForecastItem>) {
         if (_binding == null) return
         val dailyList = fullList.filter { it.dt_txt.contains("12:00:00") }
-        val displayList = if (dailyList.isNotEmpty()) dailyList else fullList.take(5)
+        val displayList = dailyList.ifEmpty { fullList.take(5) }
         val adapter = ForecastAdapter(displayList)
         binding.recyclerForecast.adapter = adapter
     }

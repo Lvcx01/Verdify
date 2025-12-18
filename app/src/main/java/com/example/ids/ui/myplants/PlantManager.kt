@@ -30,7 +30,7 @@ object PlantManager {
 
             if (imagePath != null) {
                 try {
-                    val file = java.io.File(imagePath)
+                    val file = File(imagePath)
                     if (file.exists()) {
                         file.delete()
                     }

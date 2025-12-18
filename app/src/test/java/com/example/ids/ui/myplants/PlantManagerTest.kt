@@ -29,7 +29,7 @@ class PlantManagerTest {
     }
 
     @Test
-    fun `aggiuntaPianta_IncrementaLista`() {
+    fun aggiuntaPiantaIncrementaLista() {
         val nuovaPianta = SavedPlant(
             commonName = "Rosa",
             scientificName = "Rosa rubiginosa",
@@ -47,7 +47,7 @@ class PlantManagerTest {
     }
 
     @Test
-    fun `rimozionePianta_RimuoveDallaLista`() {
+    fun rimozionePianta_RimuoveDallaLista() {
         val pianta1 = SavedPlant("Basilico", "Ocimum", "90%")
         val pianta2 = SavedPlant("Menta", "Mentha", "80%")
 
@@ -61,7 +61,7 @@ class PlantManagerTest {
     }
 
     @Test
-    fun `ricercaPianta_TrovaQuellaGiusta`() {
+    fun ricercaPianta_TrovaQuellaGiusta() {
         val p1 = SavedPlant("Cactus", "Cactaceae", "99%")
         PlantManager.plants.add(p1)
 

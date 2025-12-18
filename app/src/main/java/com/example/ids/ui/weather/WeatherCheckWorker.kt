@@ -93,7 +93,6 @@ class WeatherCheckWorker(context: Context, params: WorkerParameters) : Coroutine
         if (temp < 2.0 && lastNotifiedId != -999) {
             title = "🥶 Frost Warning"
             message = "Temperature dropped to ${temp.toInt()}°C! Cover your plants."
-            shouldNotify = true
 
             NotificationHelper.sendNotification(applicationContext, title, message)
             prefs.edit().putInt("last_weather_id", -999).putString("last_weather_date", todayDate).apply()

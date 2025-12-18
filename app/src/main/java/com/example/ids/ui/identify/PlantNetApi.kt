@@ -2,7 +2,6 @@ package com.example.ids.ui.identify
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -20,13 +19,6 @@ interface PlantNetApi {
         @Query("no-reject") noReject: Boolean = false,
         @Query("lang") lang: String = "it"
     ): PlantNetResponse
-
-    @GET("v2/ktn/species")
-    suspend fun searchSpecies(
-        @Query("api-key") apiKey: String,
-        @Query("q") query: String,
-        @Query("lang") lang: String = "it"
-    ): List<PlantNetSpecies>
 }
 
 data class PlantNetResponse(
