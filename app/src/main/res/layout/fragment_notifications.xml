@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="#E8F5E9">
 
-    <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
@@ -43,7 +42,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- LISTA NOTIFICHE (Visibile se ci sono dati) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerNotifications"
         android:layout_width="match_parent"
@@ -55,7 +53,6 @@
         app:layout_constraintTop_toBottomOf="@id/headerContainer"
         tools:visibility="gone" />
 
-    <!-- EMPTY STATE (Visibile se NON ci sono notifiche) -->
     <LinearLayout
         android:id="@+id/emptyStateView"
         android:layout_width="wrap_content"
@@ -74,7 +71,6 @@
             android:layout_height="120dp"
             android:src="@android:drawable/ic_popup_reminder"
             app:tint="#A5D6A7" />
-        <!-- Se hai un'icona migliore tipo una campana o una foglia, usala qui -->
 
         <TextView
             android:layout_width="wrap_content"

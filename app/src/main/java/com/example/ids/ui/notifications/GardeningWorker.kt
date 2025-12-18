@@ -13,11 +13,11 @@ class GardeningWorker(context: Context, params: WorkerParameters) : CoroutineWor
     override suspend fun doWork(): Result {
         val context = applicationContext
         val prefs = context.getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
-        val notificationsEnabled = prefs.getBoolean("notifications_enabled", false)
+        val notificationsEnabled = prefs.getBoolean("notifications_enabled", true)
 
         if (!notificationsEnabled) return Result.success()
 
-        if (prefs.getBoolean("notif_care", false)) {
+        if (prefs.getBoolean("notif_care", true)) {
             try {
                 PlantManager.loadPlants(context)
 
@@ -44,7 +44,7 @@ class GardeningWorker(context: Context, params: WorkerParameters) : CoroutineWor
             }
         }
 
-        if (prefs.getBoolean("notif_weather", false)) {
+        if (prefs.getBoolean("notif_weather", true)) {
             val latStr = prefs.getString("saved_lat", null)
             val lonStr = prefs.getString("saved_lon", null)
 
@@ -74,7 +74,6 @@ class GardeningWorker(context: Context, params: WorkerParameters) : CoroutineWor
                 }
             }
         }
-
         return Result.success()
     }
 

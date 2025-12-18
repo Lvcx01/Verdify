@@ -69,6 +69,30 @@ class SettingsFragment : Fragment() {
         setupButtons()
         loadPreferences()
 
+        binding.btnTestNotification.setOnClickListener {
+            if(!binding.switchNotifications.isChecked) {
+                Toast.makeText(context, "Attiva le notifiche prima di testare!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (androidx.core.content.ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(context, "Abilita i permessi di notifica prima!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            com.example.ids.ui.notifications.NotificationHelper.sendNotification(
+                requireContext(),
+                "Test Verdify 🔔",
+                "Questa è una notifica di prova! Un saluto dalle tue piante! 🌿"
+            )
+
+            Toast.makeText(context, "Notifica inviata!", Toast.LENGTH_SHORT).show()
+        }
         return binding.root
     }
 
@@ -105,8 +129,6 @@ class SettingsFragment : Fragment() {
     }
 
     private fun updateControlsState(enabled: Boolean) {
-        val prefs = requireContext().getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
-
         binding.checkWeather.isEnabled = enabled
         binding.checkCare.isEnabled = enabled
     }
@@ -141,22 +163,14 @@ class SettingsFragment : Fragment() {
 
     private fun loadPreferences() {
         val prefs = requireContext().getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
-        val allEnabled = prefs.getBoolean("notifications_enabled", false)
+        val allEnabled = prefs.getBoolean("notifications_enabled", true)
 
         binding.switchNotifications.isChecked = allEnabled
-        binding.checkWeather.isChecked = prefs.getBoolean("notif_weather", false)
-        binding.checkCare.isChecked = prefs.getBoolean("notif_care", false)
+        binding.checkWeather.isChecked = prefs.getBoolean("notif_weather", true)
+        binding.checkCare.isChecked = prefs.getBoolean("notif_care", true)
 
         updateControlsState(allEnabled)
-    }
-
-    private fun scheduleNotifications() {
-        val workRequest = PeriodicWorkRequestBuilder<GardeningWorker>(24, TimeUnit.HOURS).build()
-        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-            "VerdifyDailyWork",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
-        )
+        updateWorkers(allEnabled, binding.checkWeather.isChecked)
     }
 
     private fun performExport(uri: Uri) {

@@ -17,7 +17,6 @@
             android:textSize="18sp"
             android:layout_marginBottom="16dp"/>
 
-        <!-- OPZIONE 1 -->
         <LinearLayout
             android:id="@+id/option_1_container"
             android:layout_width="match_parent"
@@ -67,7 +66,6 @@
             android:background="#DDDDDD"
             android:layout_marginVertical="8dp"/>
 
-        <!-- OPZIONE 2 -->
         <LinearLayout
             android:id="@+id/option_2_container"
             android:layout_width="match_parent"

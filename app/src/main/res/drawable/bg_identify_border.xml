@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Sfondo Bianco -->
     <solid android:color="#FFFFFF"/>
 
-    <!-- BORDO VERDE (Qui sta la magia) -->
     <stroke
         android:width="3dp"
         android:color="#4CAF50"/>
 
-    <!-- Angoli Arrotondati -->
     <corners android:radius="24dp"/>
 </shape>

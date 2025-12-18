@@ -1,7 +1,13 @@
 package com.example.ids
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -15,11 +21,61 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private val reqPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        permissions.entries.forEach {
+            val permissionName = it.key
+            val isGranted = it.value
+            if (!isGranted) {
+                showPermissionDeniedDialog(permissionName)
+            }
+        }
+    }
+    private fun checkAndRequestPermissions() {
+        val missingPermissions = reqPermissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }.toTypedArray()
+
+        if (missingPermissions.isNotEmpty()) {
+            requestPermissionLauncher.launch(missingPermissions)
+        }
+    }
+    private fun showPermissionDeniedDialog(permission: String) {
+        val message = when (permission) {
+            Manifest.permission.CAMERA -> "Serve la fotocamera per vedere le piante! 🌱"
+            Manifest.permission.ACCESS_FINE_LOCATION -> "Serve la posizione per il meteo locale! 🌦️"
+            Manifest.permission.POST_NOTIFICATIONS -> "Servono le notifiche per ricordarti l'acqua! 💧"
+            else -> "Questa funzione richiede un permesso per funzionare."
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Permesso Mancante")
+            .setMessage(message)
+            .setPositiveButton("Riprova") { _, _ ->
+                requestPermissionLauncher.launch(arrayOf(permission))
+            }
+            .setNegativeButton("Ignora", null)
+            .show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        checkAndRequestPermissions()
         supportActionBar?.hide()
 
         val navView: BottomNavigationView = binding.navView
@@ -50,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            "VerdifyDailyWork",
+            "VerdifyDailyCare",
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )

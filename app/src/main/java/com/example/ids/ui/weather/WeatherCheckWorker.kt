@@ -15,8 +15,8 @@ class WeatherCheckWorker(context: Context, params: WorkerParameters) : Coroutine
     override suspend fun doWork(): Result {
         val prefs = applicationContext.getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
 
-        if (!prefs.getBoolean("notifications_enabled", false) ||
-            !prefs.getBoolean("notif_weather", false)) {
+        if (!prefs.getBoolean("notifications_enabled", true) ||
+            !prefs.getBoolean("notif_weather", true)) {
             return Result.success()
         }
 

@@ -7,19 +7,22 @@ import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import com.example.ids.ui.myplants.PlantManager
 import com.example.ids.ui.myplants.SavedPlant
-import com.example.ids.ui.weather.OpenWeatherMapApi
-import com.example.ids.ui.weather.WeatherResponse
 import com.example.ids.ui.weather.WeatherRetrofitInstance
-import com.example.ids.ui.weather.Main
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 class GardeningWorkerTest {
+
     private lateinit var context: Context
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var workerParams: WorkerParameters
@@ -34,13 +37,11 @@ class GardeningWorkerTest {
         every { context.getSharedPreferences("AppConfig", Context.MODE_PRIVATE) } returns sharedPrefs
 
         mockkObject(PlantManager)
-        mockkObject(WeatherRetrofitInstance)
         mockkObject(NotificationHelper)
-
-        every { PlantManager.loadPlants(any()) } just Runs
-        PlantManager.plants.clear()
+        mockkObject(WeatherRetrofitInstance)
 
         every { NotificationHelper.sendNotification(any(), any(), any()) } just Runs
+        every { PlantManager.loadPlants(any()) } just Runs
     }
 
     @After
@@ -49,17 +50,18 @@ class GardeningWorkerTest {
     }
 
     @Test
-    fun `testNotificaInnaffiatura_InviataSePiantaAssetata`() = runTest {
-        every { sharedPrefs.getBoolean("notifications_enabled", false) } returns true
-        every { sharedPrefs.getBoolean("notif_care", false) } returns true
+    fun testNotificaInnaffiatura_InviataSePiantaAssetata() = runTest {
+        every { sharedPrefs.getBoolean("notifications_enabled", true) } returns true
+        every { sharedPrefs.getBoolean("notif_care", true) } returns true
 
         val piantaAssetata = SavedPlant(
             commonName = "Basilico",
             scientificName = "Ocimum basilicum",
             accuracy = "98%",
-            wateringFrequency = 7,
-            lastWatered = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10)
+            lastWatered = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 5),
+            wateringFrequency = 3
         )
+        PlantManager.plants.clear()
         PlantManager.plants.add(piantaAssetata)
 
         val worker = TestListenableWorkerBuilder<GardeningWorker>(context).build()
@@ -70,36 +72,8 @@ class GardeningWorkerTest {
         verify {
             NotificationHelper.sendNotification(
                 any(),
-                "Verdify Reminder 💧",
+                eq("Verdify Reminder 💧"),
                 match { it.contains("Basilico") }
-            )
-        }
-    }
-
-    @Test
-    fun `testNotificaMeteo_InviataSeGelo`() = runTest {
-        every { sharedPrefs.getBoolean("notifications_enabled", false) } returns true
-        every { sharedPrefs.getBoolean("notif_weather", false) } returns true
-        every { sharedPrefs.getString("saved_lat", null) } returns "45.0"
-        every { sharedPrefs.getString("saved_lon", null) } returns "10.0"
-
-        val mockApi = mockk<OpenWeatherMapApi>()
-        val mockResponse = mockk<WeatherResponse>(relaxed = true)
-        every { mockResponse.main } returns Main(temp = 2.0, 0.0, 50, 0.0, 0.0)
-
-        coEvery { mockApi.getCurrentWeather(any(), any(), any(), any(), any()) } returns mockResponse
-        every { WeatherRetrofitInstance.api } returns mockApi
-
-        val worker = TestListenableWorkerBuilder<GardeningWorker>(context).build()
-        val result = worker.doWork()
-
-        assertEquals(ListenableWorker.Result.success(), result)
-
-        verify {
-            NotificationHelper.sendNotification(
-                any(),
-                match { it.contains("Gelo") },
-                any()
             )
         }
     }

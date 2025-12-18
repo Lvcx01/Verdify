@@ -48,12 +48,12 @@ class WeatherCheckWorkerTest {
     }
 
     @Test
-    fun `testMeteo_TempestaInviaNotifica`() = runTest {
-        every { sharedPrefs.getBoolean("notifications_enabled", false) } returns true
-        every { sharedPrefs.getBoolean("notif_weather", false) } returns true
+    fun testMeteo_TempestaInviaNotifica() = runTest {
+        every { sharedPrefs.getBoolean("notifications_enabled", true) } returns true
+        every { sharedPrefs.getBoolean("notif_weather", true) } returns true
+
         every { sharedPrefs.getString("saved_lat", null) } returns "45.0"
         every { sharedPrefs.getString("saved_lon", null) } returns "11.0"
-
         every { sharedPrefs.getInt("last_weather_id", -1) } returns -1
         every { sharedPrefs.getString("last_weather_date", "") } returns "2023-01-01"
 
@@ -82,9 +82,10 @@ class WeatherCheckWorkerTest {
     }
 
     @Test
-    fun `testMeteo_GeloInviaNotificaPrioritaria`() = runTest {
-        every { sharedPrefs.getBoolean("notifications_enabled", false) } returns true
-        every { sharedPrefs.getBoolean("notif_weather", false) } returns true
+    fun testMeteo_GeloInviaNotificaPrioritaria() = runTest {
+        every { sharedPrefs.getBoolean("notifications_enabled", true) } returns true
+        every { sharedPrefs.getBoolean("notif_weather", true) } returns true
+
         every { sharedPrefs.getString("saved_lat", null) } returns "45.0"
         every { sharedPrefs.getString("saved_lon", null) } returns "11.0"
 
@@ -106,7 +107,7 @@ class WeatherCheckWorkerTest {
         verify {
             NotificationHelper.sendNotification(
                 any(),
-                match { it.contains("Frost") }, // Titolo Frost Warning
+                match { it.contains("Frost") },
                 any()
             )
         }

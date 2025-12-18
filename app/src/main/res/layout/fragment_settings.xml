@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E8F5E9">
 
-    <!-- Header con Back Button -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="48dp"
@@ -14,6 +14,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Torna indietro"
         android:src="@drawable/ic_arrow_back_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,9 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Settings"
+        android:textColor="#1B5E20"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#1B5E20"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack" />
@@ -45,14 +46,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Card Notifiche -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@android:color/white">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -61,14 +61,13 @@
                     android:padding="20dp">
 
                     <TextView
-                        android:text="Notifications"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#1B5E20"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textColor="#1B5E20"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                    <!-- SWITCH: Testo forzato scuro -->
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchNotifications"
                         android:layout_width="match_parent"
@@ -78,34 +77,56 @@
                         android:textColor="#333333"
                         android:textSize="16sp" />
 
-                    <!-- CHECKBOX: Testo forzato scuro -->
                     <CheckBox
                         android:id="@+id/checkWeather"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Weather Alerts"
-                        android:textColor="#333333"
                         android:buttonTint="#1B5E20"
-                        android:enabled="false" />
+                        android:enabled="false"
+                        android:text="Weather Alerts"
+                        android:textColor="#333333" />
 
                     <CheckBox
                         android:id="@+id/checkCare"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Daily Care Reminders"
-                        android:textColor="#333333"
                         android:buttonTint="#1B5E20"
-                        android:enabled="false" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        android:enabled="false"
+                        android:text="Daily Care Reminders"
+                        android:textColor="#333333" />
 
-            <!-- Card Backup -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="24dp"
+                        android:background="#33000000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Debug &amp; Testing"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_test_notification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#FF9800"
+                        android:text="Invia Notifica di Prova 🔔"
+                        app:cornerRadius="8dp" />
+
+                </LinearLayout> </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@android:color/white">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -114,14 +135,13 @@
                     android:padding="20dp">
 
                     <TextView
-                        android:text="Data &amp; Backup"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#1B5E20"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="Data &amp; Backup"
+                        android:textColor="#1B5E20"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                    <!-- EXPORT: Verde Pieno -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnExport"
                         android:layout_width="match_parent"
@@ -133,7 +153,6 @@
                         app:backgroundTint="#1B5E20"
                         app:cornerRadius="12dp" />
 
-                    <!-- IMPORT: Bianco con bordo Verde -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnImport"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -143,9 +162,9 @@
                         android:text="Import Data"
                         android:textColor="#1B5E20"
                         android:textStyle="bold"
+                        app:cornerRadius="12dp"
                         app:strokeColor="#1B5E20"
-                        app:strokeWidth="2dp"
-                        app:cornerRadius="12dp" />
+                        app:strokeWidth="2dp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
