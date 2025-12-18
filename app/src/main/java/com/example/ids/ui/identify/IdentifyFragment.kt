@@ -234,7 +234,7 @@ class IdentifyFragment : Fragment() {
         }
     }
 
-    private fun showConfirmationDialog(result: com.example.ids.ui.identify.PlantNetResult) {
+    private fun showConfirmationDialog(result: PlantNetResult) {
         val scorePercent = (result.score * 100).toInt()
         val scientificName = result.species.scientificName
         val commonName = result.species.commonNames?.firstOrNull() ?: scientificName
@@ -263,7 +263,7 @@ class IdentifyFragment : Fragment() {
             .show()
     }
 
-    private fun saveIdentifiedPlant(result: com.example.ids.ui.identify.PlantNetResult) {
+    private fun saveIdentifiedPlant(result: PlantNetResult) {
         val name = result.species.commonNames?.firstOrNull() ?: result.species.scientificName
         val bitmap = (binding.imagePreview.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap
         val path = if(bitmap != null) PlantManager.saveImageToStorage(requireContext(), bitmap) else null

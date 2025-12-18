@@ -14,8 +14,6 @@ object PlantCareAI {
     suspend fun askForCareTips(plantName: String, weatherReport: String, currentDate: String, daysSinceWatering: Int): String {
         return withContext(Dispatchers.IO) {
             Log.d("VerdifyAI", "Richiesta partita per: $plantName")
-
-            // LOGICA CRITICA: Definiamo chiaramente lo stato per l'IA
             val waterContext = when {
                 daysSinceWatering == 0 -> "L'utente ha cliccato 'HO ANNAFFIATO' OGGI STESSO. Il terreno è bagnato."
                 daysSinceWatering > 1000 -> "Mai annaffiata finora nell'app."
@@ -49,6 +47,7 @@ object PlantCareAI {
                 💧 IRRIGAZIONE
                 [Se giorni=0: Scrivi IMPERATIVO "STOP ACQUA. Terreno già bagnato." e spiega brevemente.]
                 [Se giorni>0: Istruzione diretta basata su meteo e temperatura. Es: "Innaffiare subito" o "Attendere".]
+                [Indicare ogni quanti giorni annaffiare con queste condizioni climatiche]
                 
                 ✂️ POTATURA
                 [Verdetto basato sulla data di oggi. Se NON è il momento, SCRIVI ESPLICITAMENTE IL PERIODO IDEALE (Mese/Stagione).]

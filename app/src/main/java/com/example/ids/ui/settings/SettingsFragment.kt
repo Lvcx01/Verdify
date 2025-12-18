@@ -50,7 +50,7 @@ class SettingsFragment : Fragment() {
         if (isGranted) {
             Toast.makeText(context, "Notifications Allowed!", Toast.LENGTH_SHORT).show()
         } else {
-            binding.switchNotifications.isChecked = false // Se nega, spegni tutto
+            binding.switchNotifications.isChecked = false
         }
     }
 
@@ -131,7 +131,7 @@ class SettingsFragment : Fragment() {
 
             workManager.enqueueUniquePeriodicWork(
                 "VerdifyWeatherWatch",
-                ExistingPeriodicWorkPolicy.UPDATE, // UPDATE riavvia il timer se cambiano le settings
+                ExistingPeriodicWorkPolicy.UPDATE,
                 weatherRequest
             )
         } else {

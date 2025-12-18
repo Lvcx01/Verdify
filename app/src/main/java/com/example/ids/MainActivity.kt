@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDailyWorker() {
         val workRequest = PeriodicWorkRequestBuilder<GardeningWorker>(24, TimeUnit.HOURS)
-            .setInitialDelay(12, TimeUnit.HOURS) // Primo controllo tra 12 ore (o metti 15 minuti per testare)
+            .setInitialDelay(12, TimeUnit.HOURS)
             .addTag("gardening_daily_work")
             .build()
 

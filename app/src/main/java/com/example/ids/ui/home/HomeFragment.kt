@@ -94,7 +94,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // --- LOGICA METEO ---
     private fun fetchCurrentWeather() {
         if (!isLocationPermissionGranted()) {
             binding.tvWeatherLocation.text = "Tap to Allow GPS"
@@ -173,7 +172,7 @@ class HomeFragment : Fragment() {
             intent.data = Uri.fromParts("package", requireContext().packageName, null)
             startActivity(intent)
             Toast.makeText(context, "Please enable Location in Permissions", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(context, "Open Settings Manually", Toast.LENGTH_SHORT).show()
         }
     }
@@ -183,7 +182,7 @@ class HomeFragment : Fragment() {
             try {
                 if (_binding == null) return@launch
 
-                val prefs = requireContext().getSharedPreferences("AppConfig", android.content.Context.MODE_PRIVATE)
+                val prefs = requireContext().getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
                 prefs.edit().putString("saved_lat", "$lat").putString("saved_lon", "$lon").apply()
 
                 val response = withContext(Dispatchers.IO) {
@@ -203,7 +202,7 @@ class HomeFragment : Fragment() {
             } catch (e: HttpException) {
                 if (e.code() == 401) setFakeWeatherData("Demo City")
                 else if (_binding != null) binding.tvWeatherCondition.text = "Net Error"
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 if (_binding != null) binding.tvWeatherCondition.text = "Offline"
             }
         }
@@ -304,7 +303,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkUserName() {
-        val prefs = requireContext().getSharedPreferences("AppConfig", android.content.Context.MODE_PRIVATE)
+        val prefs = requireContext().getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
         val savedName = prefs.getString("username", null)
 
         if (savedName == null) {
@@ -317,7 +316,7 @@ class HomeFragment : Fragment() {
                 .setCancelable(false)
                 .setPositiveButton("Save") { _, _ ->
                     val name = input.text.toString()
-                    val finalName = if (name.isNotEmpty()) name else "Gardener"
+                    val finalName = name.ifEmpty { "Gardener" }
                     prefs.edit().putString("username", finalName).apply()
                     binding.tvUsername.text = finalName
                 }

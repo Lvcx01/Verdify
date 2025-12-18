@@ -1,6 +1,5 @@
 package com.example.ids.ui.weather
 
-import com.google.ai.client.generativeai.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Query
 

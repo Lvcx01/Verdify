@@ -15,7 +15,6 @@ import com.example.ids.R
 object NotificationHelper {
 
     private const val CHANNEL_ID = "verdify_channel_01"
-
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Verdify Alerts"

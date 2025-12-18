@@ -19,11 +19,8 @@ class NotificationsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
-
         binding.recyclerNotifications.layoutManager = LinearLayoutManager(context)
-
         return binding.root
     }
 

@@ -38,7 +38,7 @@ class WeatherFragment : Fragment() {
                 getCurrentLocationWeather()
             } else {
                 Toast.makeText(context, "Permission denied. Showing default.", Toast.LENGTH_SHORT).show()
-                fetchWeatherData(41.9028, 12.4964) // Fallback
+                fetchWeatherData(41.9028, 12.4964)
             }
         }
 
@@ -102,7 +102,14 @@ class WeatherFragment : Fragment() {
                 updateForecastList(forecast.list)
 
             } catch (e: Exception) {
-                // ...
+                android.util.Log.e("WeatherFragment", "Errore recupero meteo: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Impossibile aggiornare il meteo. Controlla la connessione.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
@@ -113,7 +120,6 @@ class WeatherFragment : Fragment() {
         binding.tvLocation.text = "📍 ${data.name}"
         binding.tvTemperature.text = "${data.main.temp.toInt()}°"
 
-        // Descrizione corrente
         val desc = data.weather.firstOrNull()?.description ?: ""
         binding.tvCondition.text = desc.replaceFirstChar { it.uppercase() }
 
