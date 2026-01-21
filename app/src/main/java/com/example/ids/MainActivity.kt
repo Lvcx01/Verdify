@@ -2,6 +2,7 @@ package com.example.ids
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -75,7 +76,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        checkAndRequestPermissions()
+        val prefs = getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
+        val termsAccepted = prefs.getBoolean("terms_accepted", false)
+        if(!termsAccepted){
+            showTermsDialog()
+        }else {
+            checkAndRequestPermissions()
+        }
         supportActionBar?.hide()
 
         val navView: BottomNavigationView = binding.navView
@@ -97,6 +104,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupDailyWorker()
+    }
+
+    private fun showTermsDialog() {
+        val termsText = """
+            Benvenuto in Verdify!
+            
+            Per offrirti la migliore esperienza, l'app richiede i seguenti permessi:
+            • Fotocamera e Galleria (per identificare le piante)
+            • Posizione (per il meteo locale)
+            • Archivio (per salvare i dati)
+            
+            Responsabilità dell'utente:
+            1. L'utente si assume la responsabilità della cura delle piante e dell'incolumità durante eventi atmosferici.
+            2. L'utente è responsabile del backup dei propri dati; in caso di disinstallazione i dati locali andranno persi.
+            3. L'uso dell'app implica l'accettazione di queste linee guida.
+        """.trimIndent()
+
+        AlertDialog.Builder(this)
+            .setTitle("Termini e Condizioni")
+            .setMessage(termsText)
+            .setCancelable(false)
+            .setPositiveButton("Conferma e Accetta") { _, _ ->
+                val prefs = getSharedPreferences("AppConfig", Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("terms_accepted", true).apply()
+                checkAndRequestPermissions()
+            }
+            .show()
     }
 
     private fun setupDailyWorker() {
